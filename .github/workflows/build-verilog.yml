@@ -1,0 +1,25 @@
+name: build verilog
+
+on: [push]
+
+jobs:
+  build-verilog:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch source code
+        uses: actions/checkout@v4
+      - name: Download sv2v
+        uses: dsaltares/fetch-gh-release-asset@1.1.2
+        with:
+          repo: zachjs/sv2v
+          version: tags/v0.0.12
+          file: sv2v-Linux.zip
+      - name: Install sv2v
+        run: 7z x sv2v-Linux.zip
+      - name: Invoke sv2v
+        run: ./sv2v-Linux/sv2v src/*.sv -whdmi.v
+      - name: Upload Verilog source
+        uses: actions/upload-artifact@v4
+        with:
+          name: hdmi.v
+          path: hdmi.v
